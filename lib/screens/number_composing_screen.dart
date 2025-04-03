@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../models/build_number_game.dart';
-import '../widgets/build_number_widgets.dart';
+import '../models/numbers_composing_game.dart';
+import '../widgets/numbers_composing_widgets.dart';
 import '../utils/sound_manager.dart';
 import '../utils/string_utils.dart';
 
-class BuildNumberScreen extends StatefulWidget {
+class NumberComposingScreen extends StatefulWidget {
   final String difficulty;
   
-  const BuildNumberScreen({super.key, required this.difficulty});
+  const NumberComposingScreen({super.key, required this.difficulty});
   
   @override
-  State<BuildNumberScreen> createState() => _BuildNumberScreenState();
+  State<NumberComposingScreen> createState() => _NumberComposingScreenState();
 }
 
-class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTickerProviderStateMixin {
+class _NumberComposingScreenState extends State<NumberComposingScreen> with SingleTickerProviderStateMixin {
   // Sound manager instance
   final _soundManager = SoundManager();
   
@@ -28,7 +28,7 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
     super.initState();
     
     // Play game music
-    _soundManager.playGameMusic('Build a Number');
+    _soundManager.playGameMusic('Number_Composing');
     
     // Setup animation for submit button
     _bounceController = AnimationController(
@@ -67,7 +67,7 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
       },
       child: ChangeNotifierProvider(
         create: (_) {
-          final game = BuildNumberGame(
+          final game = NumberComposingGame(
             widget.difficulty, 
             onPlaySound: _playSound,
           );
@@ -77,13 +77,13 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
           };
           return game;
         },
-        child: Consumer<BuildNumberGame>(
+        child: Consumer<NumberComposingGame>(
           builder: (context, game, child) {
             return Scaffold(
               extendBodyBehindAppBar: true,
               appBar: AppBar(
                 title: Text('Build a Number - ${widget.difficulty.capitalize()}'),
-                backgroundColor: Colors.orange.shade400.withOpacity(0.8),
+                backgroundColor: Colors.orange.shade400.withValues(alpha:0.8),
                 elevation: 0,
                 actions: [
                   // Help button
@@ -129,7 +129,7 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
     );
   }
   
-  Widget _buildGameScreen(BuildNumberGame game) {
+  Widget _buildGameScreen(NumberComposingGame game) {
     // Get screen size for responsive layout
     final screenSize = MediaQuery.of(context).size;
     final isSmallScreen = screenSize.height < 700;
@@ -152,7 +152,7 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha:0.7),
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
@@ -395,7 +395,7 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
                 ),
                 padding: EdgeInsets.all(isSmallScreen ? 8.0 : 12.0),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -440,13 +440,13 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
     );
   }
   
-  Widget _buildGameOverScreen(BuildNumberGame game) {
+  Widget _buildGameOverScreen(NumberComposingGame game) {
     return Center(
       child: Container(
         padding: EdgeInsets.all(25),
         margin: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha:0.9),
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
@@ -474,7 +474,7 @@ class _BuildNumberScreenState extends State<BuildNumberScreen> with SingleTicker
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.amber.withOpacity(0.5),
+                          color: Colors.amber.withValues(alpha:0.5),
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),

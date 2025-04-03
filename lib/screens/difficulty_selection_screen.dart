@@ -65,7 +65,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
             color: Colors.white,
           ),
         ),
-        backgroundColor: widget.themeColor.withOpacity(0.7),
+        backgroundColor: widget.themeColor.withValues(alpha: 0.7),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -82,8 +82,8 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  widget.themeColor.withOpacity(0.7), 
-                  widget.themeColor.withOpacity(0.3)
+                  widget.themeColor.withValues(alpha: 0.7), 
+                  widget.themeColor.withValues(alpha: 0.3)
                 ],
               ),
             ),
@@ -114,7 +114,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                             vertical: 15
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -131,7 +131,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                                 style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
-                                  color: widget.themeColor.withOpacity(0.8),
+                                  color: widget.themeColor.withValues(alpha: 0.8),
                                   shadows: [
                                     Shadow(
                                       blurRadius: 2.0,
@@ -323,7 +323,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                         gradient: LinearGradient(
                           colors: [
                             color,
-                            color.withOpacity(0.7),
+                            color.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -331,7 +331,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: color.withOpacity(isSelected ? 0.8 : 0.4),
+                            color: color.withValues(alpha: isSelected ? 0.8 : 0.4),
                             blurRadius: isSelected ? 15 : 8,
                             offset: Offset(0, 4),
                           ),
@@ -386,14 +386,14 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                                         emoji,
                                         style: TextStyle(
                                           fontSize: 16,
-                                          color: Colors.white.withOpacity(0.9),
+                                          color: Colors.white.withValues(alpha: 0.9),
                                         ),
                                       ),
                                       Text(
                                         details,
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Colors.white.withOpacity(0.9),
+                                          color: Colors.white.withValues(alpha: 0.9),
                                         ),
                                       ),
                                     ],
@@ -470,7 +470,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
         top: 70,
         left: -20,
         child: _buildFloatingShape(
-          Colors.white.withOpacity(0.2),
+          Colors.white.withValues(alpha: 0.2),
           80,
           4,
         ),
@@ -481,7 +481,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
         bottom: 50,
         right: -30,
         child: _buildFloatingShape(
-          Colors.white.withOpacity(0.2),
+          Colors.white.withValues(alpha: 0.2),
           100,
           6,
         ),
@@ -492,7 +492,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
         bottom: size.height * 0.2,
         left: 30,
         child: _buildFloatingShape(
-          Colors.white.withOpacity(0.15),
+          Colors.white.withValues(alpha: 0.15),
           60,
           3,
         ),
@@ -512,7 +512,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                 height: 70,
                 width: 70,
                 decoration: BoxDecoration(
-                  color: widget.themeColor.withOpacity(0.4),
+                  color: widget.themeColor.withValues(alpha: 0.4),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
@@ -573,7 +573,7 @@ class BackgroundPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.04)
+      ..color = Colors.white.withValues(alpha: 0.04)
       ..style = PaintingStyle.fill;
     
     final random = math.Random(42); // Fixed seed for consistency

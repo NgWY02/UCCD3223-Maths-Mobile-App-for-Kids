@@ -51,7 +51,7 @@ Widget buildBalloon(int number, int colorIndex, {VoidCallback? onTap}) {
                     width: 15,
                     height: 15,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -107,8 +107,8 @@ Widget buildEmptyBalloonSpot(int? hintNumber, int index) {
           height: 75,
           decoration: BoxDecoration(
             color: showHint
-                ? Colors.yellow.withOpacity(0.7)
-                : Colors.grey.shade200.withOpacity(0.7),
+                ? Colors.yellow.withValues(alpha:0.7)
+                : Colors.grey.shade200.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
               color: showHint ? Colors.yellow.shade800 : Colors.grey.shade400,
@@ -185,7 +185,7 @@ Widget buildCloud(double size) {
     width: size,
     height: size * 0.6,
     decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.8),
+      color: Colors.white.withValues(alpha: 0.8),
       borderRadius: BorderRadius.circular(size / 2),
     ),
   );

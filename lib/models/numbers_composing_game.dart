@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 
-class BuildNumberGame extends ChangeNotifier {
+class NumberComposingGame extends ChangeNotifier {
   int targetNumber = 0;
   List<int> numberOptions = [];
   List<int> selectedNumbers = [];
@@ -44,7 +44,7 @@ class BuildNumberGame extends ChangeNotifier {
   
   final Random random = Random();
   
-  BuildNumberGame(String difficulty, {this.onPlaySound}) {
+  NumberComposingGame(String difficulty, {this.onPlaySound}) {
     _difficulty = difficulty;
     _configureDifficulty(difficulty);
     generateNewRound();

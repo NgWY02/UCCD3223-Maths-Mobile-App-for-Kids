@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 
-class NumberLadderGame extends ChangeNotifier {
+class NumberOrderingGame extends ChangeNotifier {
   // Game state
   List<int> numbers = [];
   List<int> orderedNumbers = [];
@@ -39,7 +39,7 @@ class NumberLadderGame extends ChangeNotifier {
   bool get hasTimeLimit => _hasTimeLimit;
   int get hintPosition => _hintPosition;
   
-  NumberLadderGame(this.difficulty, {this.onPlaySound}) {
+  NumberOrderingGame(this.difficulty, {this.onPlaySound}) {
     _configureDifficulty();
     generateNewRound();
     

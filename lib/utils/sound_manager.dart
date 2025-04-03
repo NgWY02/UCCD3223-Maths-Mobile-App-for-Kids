@@ -75,19 +75,18 @@ class SoundManager {
   // Play specific game music
   Future<void> playGameMusic(String gameName) async {
     String musicPath;
-    switch (gameName.toLowerCase()) {
-      case 'number duel':
-        musicPath = 'sounds/number_duel_music.mp3';
+    switch (gameName) {
+      case 'Number_Comparison':
+        musicPath = 'sounds/number_comparison_music.mp3';
         break;
-      case 'balloon numbers':
-      case 'number ladder': // Add this alias
-        musicPath = 'sounds/balloon_numbers_music.mp3';
+      case 'Number_Ordering': // Add this alias
+        musicPath = 'sounds/number_ordering_music.mp3';
         break;
-      case 'build a number':
-        musicPath = 'sounds/build_number_music.mp3';
+      case 'Number_Composing':
+        musicPath = 'sounds/number_composing_music.mp3';
         break;
       default:
-        musicPath = 'sounds/game_music.mp3'; // fallback
+        musicPath = 'sounds/theme_music.mp3'; // fallback
     }
     await playBackgroundMusic(musicPath);
   }

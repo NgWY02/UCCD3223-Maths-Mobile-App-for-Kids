@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'number_duel_screen.dart';
-import 'number_ladder_screen.dart';
-import 'build_number_screen.dart';
+import 'numbers_comparison_screen.dart';
+import 'numbers_ordering_screen.dart';
+import 'number_composing_screen.dart';
 import 'difficulty_selection_screen.dart';
 import 'start_screen.dart';
 import '../utils/sound_manager.dart';
@@ -122,11 +122,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                             decoration: BoxDecoration(
-                              color: Colors.yellow.shade100.withOpacity(0.7),
+                              color: Colors.yellow.shade100.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.yellow.shade600.withOpacity(0.5),
+                                  color: Colors.yellow.shade600.withValues(alpha: 0.5),
                                   blurRadius: 10,
                                   spreadRadius: 2,
                                 ),
@@ -236,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.yellow.shade600.withOpacity(0.5),
+                      color: Colors.yellow.shade600.withValues(alpha: 0.5),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -299,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.5),
+                  color: color.withValues(alpha: 0.5),
                   blurRadius: 5,
                   offset: Offset(0, 3),
                 ),
@@ -346,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     await Navigator.push(
       context, 
       MaterialPageRoute(
-        builder: (context) => NumberDuelScreen(difficulty: difficulty)
+        builder: (context) => NumberComparisonScreen(difficulty: difficulty)
       )
     );
     
@@ -358,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     await Navigator.push(
       context, 
       MaterialPageRoute(
-        builder: (context) => NumberLadderScreen(difficulty: difficulty)
+        builder: (context) => NumberOrderingScreen(difficulty: difficulty)
       )
     );
     
@@ -370,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     await Navigator.push(
       context, 
       MaterialPageRoute(
-        builder: (context) => BuildNumberScreen(difficulty: difficulty)
+        builder: (context) => NumberComposingScreen(difficulty: difficulty)
       )
     );
     
@@ -386,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.6),
+            color: color.withValues(alpha: 0.6),
             blurRadius: 8,
             offset: Offset(0, 4),
           ),
@@ -403,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               gradient: LinearGradient(
                 colors: [
                   color,
-                  color.withOpacity(0.8),
+                  color.withValues(alpha:0.8),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -447,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           subtitle,
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                         ),
                       ],

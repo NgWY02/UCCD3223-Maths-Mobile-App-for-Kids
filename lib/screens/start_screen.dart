@@ -102,11 +102,11 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
                   Container(
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha:0.7),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.yellow.withOpacity(0.5),
+                          color: Colors.yellow.withValues(alpha:0.5),
                           blurRadius: 15,
                           spreadRadius: 5,
                         ),
@@ -348,11 +348,11 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
           child: Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.8),
+              color: color.withValues(alpha:0.8),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.4),
+                  color: color.withValues(alpha: 0.4),
                   blurRadius: 5,
                   offset: Offset(0, 3),
                 ),
@@ -391,7 +391,7 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: color.withOpacity(0.6),
+                    color: color.withValues(alpha: 0.6),
                     blurRadius: 10,
                     offset: Offset(0, 4),
                   ),
@@ -424,7 +424,7 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
       width: size,
       height: size * 0.6,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.8),
+        color: color.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(size / 2),
       ),
     );

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../models/number_ladder_game.dart';
-import '../widgets/number_ladder_widgets.dart';
+import '../models/numbers_ordering_game.dart';
+import '../widgets/numbers_ordering_widgets.dart';
 import '../utils/sound_manager.dart';
 import '../utils/string_utils.dart';
 
-class NumberLadderScreen extends StatefulWidget {
+class NumberOrderingScreen extends StatefulWidget {
   final String difficulty;
 
-  const NumberLadderScreen({super.key, required this.difficulty});
+  const NumberOrderingScreen({super.key, required this.difficulty});
 
   @override
-  _NumberLadderScreenState createState() => _NumberLadderScreenState();
+  _NumberOrderingScreenState createState() => _NumberOrderingScreenState();
 }
 
-class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTickerProviderStateMixin {
+class _NumberOrderingScreenState extends State<NumberOrderingScreen> with SingleTickerProviderStateMixin {
   // Sound management
   final SoundManager _soundManager = SoundManager();
   bool _isMusicPlaying = true;
@@ -32,7 +32,7 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
     _isMusicPlaying = _soundManager.isMusicEnabled;
     
     // Use only this method to start game music
-    _soundManager.playGameMusic('Balloon Numbers');
+    _soundManager.playGameMusic('Number_Ordering');
     
     // Setup bounce animation for submit button
     _bounceController = AnimationController(
@@ -71,17 +71,17 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
         return true;
       },
       child: ChangeNotifierProvider(
-        create: (_) => NumberLadderGame(
+        create: (_) => NumberOrderingGame(
           widget.difficulty,
           onPlaySound: _playSound,
         ),
-        child: Consumer<NumberLadderGame>(
+        child: Consumer<NumberOrderingGame>(
           builder: (context, game, child) {
             return Scaffold(
               extendBodyBehindAppBar: true,
               appBar: AppBar(
                 title: Text('Balloon Numbers - ${widget.difficulty.capitalize()}'),
-                backgroundColor: Colors.blue.shade400.withOpacity(0.7),
+                backgroundColor: Colors.blue.shade400.withValues(alpha: 0.7),
                 elevation: 0,
                 actions: [
                   // Help button
@@ -126,7 +126,7 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
     );
   }
 
-  Widget _buildGameScreen(NumberLadderGame game) {
+  Widget _buildGameScreen(NumberOrderingGame game) {
     // Get screen size for responsive layout
     final screenSize = MediaQuery.of(context).size;
     final isSmallScreen = screenSize.height < 700;
@@ -144,7 +144,7 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
@@ -459,7 +459,7 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
               padding: EdgeInsets.all(isSmallScreen ? 8 : 15),
               margin: EdgeInsets.all(isSmallScreen ? 5 : 10),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
@@ -494,7 +494,7 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
     );
   }
 
-  Widget _buildGameOverScreen(NumberLadderGame game) {
+  Widget _buildGameOverScreen(NumberOrderingGame game) {
     return Stack(
       children: [
 
@@ -504,7 +504,7 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
             padding: EdgeInsets.all(25),
             margin: EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
@@ -532,7 +532,7 @@ class _NumberLadderScreenState extends State<NumberLadderScreen> with SingleTick
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.amber.withOpacity(0.5),
+                              color: Colors.amber.withValues(alpha: 0.5),
                               blurRadius: 20,
                               spreadRadius: 5,
                             ),

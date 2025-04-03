@@ -32,10 +32,10 @@ Widget buildTransitionIndicator(VoidCallback onComplete) {
   return Container(
     padding: EdgeInsets.all(15),
     decoration: BoxDecoration(
-      color: Colors.blue.withOpacity(0.2),
+      color: Colors.blue.withValues(alpha: 0.2),
       borderRadius: BorderRadius.circular(20),
       border: Border.all(
-        color: Colors.blue.withOpacity(0.5),
+        color: Colors.blue.withValues(alpha: 0.5),
         width: 2,
       ),
     ),
@@ -251,7 +251,7 @@ Widget buildPulsingHighlight(Widget child) {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.yellow.withOpacity(0.3 * value),
+              color: Colors.yellow.withValues(alpha: 0.3 * value),
               spreadRadius: 10 * value,
               blurRadius: 15 * value,
             ),
@@ -286,7 +286,7 @@ Widget buildBouncingButton({
               borderRadius: borderRadius,
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.4),
+                  color: color.withValues(alpha: 0.4),
                   blurRadius: 5,
                   offset: Offset(0, 3),
                 ),

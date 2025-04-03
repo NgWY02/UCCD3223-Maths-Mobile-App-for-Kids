@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class NumberDuelGame with ChangeNotifier {
+class NumberComparisonGame with ChangeNotifier {
   // Game state
   int _score = 0;
   int _currentRound = 1;
@@ -38,7 +38,7 @@ class NumberDuelGame with ChangeNotifier {
   int get getTimeLimit => _timeLimit;
 
   // Constructor
-  NumberDuelGame(String difficulty) {
+  NumberComparisonGame(String difficulty) {
     // Set game parameters based on difficulty
     switch(difficulty.toLowerCase()) {
       case 'easy':
@@ -61,7 +61,7 @@ class NumberDuelGame with ChangeNotifier {
         _minNumber = 50;
         _maxNumber = 100;
         _maxRounds = 15;
-        _timeLimit = 5; // 5 seconds per question
+        _timeLimit = 10; // 10 seconds per question
         _hintsRemaining = 1;
         _skipsRemaining = 1;
         break;

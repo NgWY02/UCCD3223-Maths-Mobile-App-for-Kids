@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../models/number_duel_game.dart';
-import '../widgets/number_duel_widgets.dart';
+import '../models/numbers_comparison_game.dart';
+import '../widgets/numbers_comparison_widgets.dart';
 import '../utils/sound_manager.dart';
 
-class NumberDuelScreen extends StatefulWidget {
+class NumberComparisonScreen extends StatefulWidget {
   final String difficulty;
   
-  const NumberDuelScreen({super.key, required this.difficulty});
+  const NumberComparisonScreen({super.key, required this.difficulty});
   
   @override
-  _NumberDuelScreenState createState() => _NumberDuelScreenState();
+  _NumberComparisonScreenState createState() => _NumberComparisonScreenState();
 }
 
-class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerProviderStateMixin {
+class _NumberComparisonScreenState extends State<NumberComparisonScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   int? selectedNumber;
@@ -28,7 +28,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
     super.initState();
     
     // Play specific game music instead of generic game_music.mp3
-    _soundManager.playGameMusic('Number Duel');
+    _soundManager.playGameMusic('Number_Comparison');
     _isMusicPlaying = _soundManager.isMusicEnabled;
     
     _animationController = AnimationController(
@@ -59,7 +59,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
     _soundManager.playGameSound(soundPath);
   }
   
-  void _startTimer(NumberDuelGame game) {
+  void _startTimer(NumberComparisonGame game) {
     if (game.getTimeLimit > 0 && !_timerActive && !game.isTransitioning) {
       _timerActive = true;
       _timeRemaining = game.getTimeLimit;
@@ -96,7 +96,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
     }
   }
   
-  void _showInstructions(NumberDuelGame game) {
+  void _showInstructions(NumberComparisonGame game) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -164,7 +164,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
     );
   }
   
-  Widget _buildDifficultyInfo(NumberDuelGame game) {
+  Widget _buildDifficultyInfo(NumberComparisonGame game) {
     // Number range info based on difficulty
     String numberRange = "";
     String timeInfo = "";
@@ -203,8 +203,8 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => NumberDuelGame(widget.difficulty),
-      child: Consumer<NumberDuelGame>(
+      create: (_) => NumberComparisonGame(widget.difficulty),
+      child: Consumer<NumberComparisonGame>(
         builder: (context, game, child) {
           // Start the timer for this round if needed
           if (game.getTimeLimit > 0 && !_timerActive && !game.isTransitioning) {
@@ -264,7 +264,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
     );
   }
   
-  Widget _buildGameScreen(NumberDuelGame game) {
+  Widget _buildGameScreen(NumberComparisonGame game) {
     return SafeArea(
       child: Center(
         child: SingleChildScrollView(
@@ -283,7 +283,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -412,8 +412,8 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                   decoration: BoxDecoration(
                     color: game.lastAnswerCorrect! 
-                        ? Colors.green.withOpacity(0.2) 
-                        : Colors.red.withOpacity(0.2),
+                        ? Colors.green.withValues(alpha: 0.2) 
+                        : Colors.red.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Row(
@@ -547,7 +547,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
     );
   }
   
-  Widget _buildNumberContainer(BuildContext context, int number, NumberDuelGame game, bool isLeft) {
+  Widget _buildNumberContainer(BuildContext context, int number, NumberComparisonGame game, bool isLeft) {
     // Determine if this number is the correct answer
     final correctAnswer = game.findBiggerNumber
         ? (game.leftNumber > game.rightNumber ? game.leftNumber : game.rightNumber)
@@ -605,7 +605,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                   boxShadow: [
                     BoxShadow(
                       color: (game.hintActive && isCorrectAnswer) 
-                          ? Colors.yellow.withOpacity(0.8) 
+                          ? Colors.yellow.withValues(alpha: 0.8) 
                           : Colors.black26,
                       blurRadius: (game.hintActive && isCorrectAnswer) ? 15 : 10,
                       spreadRadius: (game.hintActive && isCorrectAnswer) ? 2 : 0,
@@ -615,7 +615,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                   // Add highlight border when hint is active and this is the correct answer
                   border: (game.hintActive && isCorrectAnswer)
                       ? Border.all(color: Colors.yellow, width: 4)
-                      : Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                      : Border.all(color: Colors.white.withValues(alpha :0.2), width: 2),
                 ),
                 child: Stack(
                   children: [
@@ -628,7 +628,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                         height: 30,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                         ),
                       ),
                     ),
@@ -640,7 +640,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                         height: 25,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                         ),
                       ),
                     ),
@@ -682,7 +682,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.yellow.withOpacity(0.5),
+                                color: Colors.yellow.withValues(alpha: 0.5),
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               ),
@@ -707,7 +707,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
     );
   }
   
-  Widget _buildGameOverScreen(NumberDuelGame game) {
+  Widget _buildGameOverScreen(NumberComparisonGame game) {
     return Stack(
       children: [
         // Background confetti-like elements for fun
@@ -733,7 +733,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.amber.withOpacity(0.5),
+                            color: Colors.amber.withValues(alpha: 0.5),
                             blurRadius: 20,
                             spreadRadius: 5,
                           ),
@@ -773,7 +773,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(

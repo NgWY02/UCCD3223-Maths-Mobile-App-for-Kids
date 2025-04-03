@@ -20,7 +20,7 @@ class MathFunApp extends StatelessWidget {
       title: 'Math Magic',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Poppins', // A child-friendly font if available
+        fontFamily: 'Poppins', 
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: StartScreen(),

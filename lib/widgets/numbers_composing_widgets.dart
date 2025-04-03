@@ -15,7 +15,7 @@ Widget buildTargetDisplay(int target) {
       shape: BoxShape.circle,
       boxShadow: [
         BoxShadow(
-          color: Colors.amber.withOpacity(0.4),
+          color: Colors.amber.withValues(alpha:0.4),
           blurRadius: 12,
           spreadRadius: 2,
           offset: const Offset(0, 4),
@@ -33,7 +33,7 @@ Widget buildTargetDisplay(int target) {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               shape: BoxShape.circle,
             ),
           ),
@@ -152,7 +152,7 @@ Widget buildNumberTile({
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: isHintNumber ? Colors.yellow.withOpacity(0.8) : Colors.black12,
+            color: isHintNumber ? Colors.yellow.withValues(alpha: 0.8) : Colors.black12,
             blurRadius: isHintNumber ? 10 : 3,
             spreadRadius: isHintNumber ? 1 : 0,
             offset: const Offset(0, 2),
