@@ -21,7 +21,7 @@ class _NumberDuelScreenState extends State<NumberDuelScreen> with SingleTickerPr
   int _timeRemaining = 0;
   bool _timerActive = false;
   final _soundManager = SoundManager();
-  bool _isMusicPlaying = true;
+ 
   
   @override
   void initState() {
