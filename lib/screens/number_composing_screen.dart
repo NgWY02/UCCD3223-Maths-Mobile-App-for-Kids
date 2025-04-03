@@ -163,7 +163,7 @@ class _NumberComposingScreenState extends State<NumberComposingScreen> with Sing
                         ],
                       ),
                       child: Text(
-                        'Round ${game.currentRound} of ${game.maxRounds}',
+                        'Round ${game.displayRound} of ${game.maxRounds}',
                         style: TextStyle(
                           fontSize: 20, 
                           fontWeight: FontWeight.bold,

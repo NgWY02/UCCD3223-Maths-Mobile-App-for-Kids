@@ -219,7 +219,7 @@ class _NumberComparisonScreenState extends State<NumberComparisonScreen> with Si
             },
             child: Scaffold(
               appBar: AppBar(
-                title: Text('Number Duel - ${widget.difficulty.capitalize()}'),
+                title: Text('Number Comparison - ${widget.difficulty.capitalize()}'),
                 backgroundColor: Colors.red.shade400,
                 actions: [
                   // Help button
@@ -294,7 +294,7 @@ class _NumberComparisonScreenState extends State<NumberComparisonScreen> with Si
                         ],
                       ),
                       child: Text(
-                        'Round ${game.currentRound} of ${game.maxRounds}',
+                        'Round ${game.displayRound} of ${game.maxRounds}', // Use displayRound instead of currentRound
                         style: TextStyle(
                           fontSize: 24, 
                           fontWeight: FontWeight.bold,

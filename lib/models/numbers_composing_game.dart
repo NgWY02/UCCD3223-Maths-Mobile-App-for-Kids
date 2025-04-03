@@ -9,6 +9,7 @@ class NumberComposingGame extends ChangeNotifier {
   Set<int> selectedIndices = {};
   int score = 0;
   int currentRound = 1;
+  int displayRound = 1; // Add this new property
   bool gameOver = false;
   bool? lastAnswerCorrect;
   int maxRounds = 10;
@@ -294,14 +295,15 @@ class NumberComposingGame extends ChangeNotifier {
     return false;
   }
   
-  // Modified to use the submit button approach
   void submitAnswer() {
     if (selectedNumbers.length < 2) return;
+    if (isTransitioning) return; // Add this guard
     
     // Stop the timer
     _timer?.cancel();
     
     int sum = selectedNumbers.fold(0, (sum, number) => sum + number);
+    isTransitioning = true; // Set this before showing feedback
     
     if (sum == targetNumber) {
       // Correct answer
@@ -311,52 +313,60 @@ class NumberComposingGame extends ChangeNotifier {
       
       if (currentRound < maxRounds) {
         currentRound++;
-        
-        // Auto-advance to next round
         _autoAdvanceToNextRound();
       } else {
         gameOver = true;
-        notifyListeners();
       }
     } else {
       // Wrong answer
       lastAnswerCorrect = false;
       if (onPlaySound != null) onPlaySound!(false);
       
-      // Auto-advance to next round 
       if (currentRound < maxRounds) {
         currentRound++;
         _autoAdvanceToNextRound();
       } else {
         gameOver = true;
-        notifyListeners();
       }
     }
+    
+    notifyListeners();
+  }
+
+  void _autoAdvanceToNextRound() {
+      // Wait a moment, then update round and show new question
+      Future.delayed(Duration(milliseconds: 1500), () {
+        displayRound = currentRound;
+        generateNewRound();
+        isTransitioning = false;
+        notifyListeners();
+      });
   }
   
-  void _autoAdvanceToNextRound() {
-    if (isTransitioning) return;
-    isTransitioning = true;
-    
-    // Wait before advancing to next round
-    Future.delayed(Duration(milliseconds: 1500), () {
-      generateNewRound();
-      isTransitioning = false;
-      notifyListeners();
-    });
-  }
   
   void restartGame() {
-    // Stop any existing timer
-    _timer?.cancel();
+    // First, handle any ongoing transitions or timers
+    isTransitioning = false;  // Reset transition state first
+    _timer?.cancel();  // Cancel any running timer
     
+    // Reset all game states
     score = 0;
     currentRound = 1;
+    displayRound = 1;
     gameOver = false;
     lastAnswerCorrect = null;
+    selectedNumbers = [];
+    selectedIndices = {};
+    hintActive = false;
+    
+    // Reconfigure difficulty settings
     _configureDifficulty(_difficulty ?? 'easy');
-    generateNewRound();
-    notifyListeners();
+    
+    // Generate new round after a short delay to ensure clean state
+    Future.delayed(Duration(milliseconds: 100), () {
+      generateNewRound();
+      notifyListeners();
+    });
   }
   
   bool isHintNumber(int number) {

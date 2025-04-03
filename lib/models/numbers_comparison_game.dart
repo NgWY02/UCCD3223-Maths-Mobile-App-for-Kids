@@ -5,6 +5,7 @@ class NumberComparisonGame with ChangeNotifier {
   // Game state
   int _score = 0;
   int _currentRound = 1;
+  int _displayRound = 1;
   int _leftNumber = 0;
   int _rightNumber = 0;
   bool _findBiggerNumber = true;
@@ -25,6 +26,7 @@ class NumberComparisonGame with ChangeNotifier {
   // Getters
   int get score => _score;
   int get currentRound => _currentRound;
+  int get displayRound => _displayRound;
   int get leftNumber => _leftNumber;
   int get rightNumber => _rightNumber;
   bool get findBiggerNumber => _findBiggerNumber;
@@ -75,12 +77,18 @@ class NumberComparisonGame with ChangeNotifier {
         _skipsRemaining = 2;
     }
     
+    _currentRound = 1;
+    _displayRound = 1; // Initialize display round
+    
     // Initialize the first round
     prepareNextRound();
   }
 
   // Generate a new round of numbers
   void prepareNextRound() {
+    // Update the display round to match the current round
+    _displayRound = _currentRound;
+    
     // Reset state for the new round
     _isTransitioning = false;
     _hintActive = false;
@@ -124,7 +132,8 @@ class NumberComparisonGame with ChangeNotifier {
     if (_currentRound >= _maxRounds) {
       _gameOver = true;
     } else {
-      _currentRound++;
+      _currentRound++; // Only increment internal round counter
+      // Don't update displayRound yet
     }
     
     notifyListeners();
@@ -162,6 +171,7 @@ class NumberComparisonGame with ChangeNotifier {
   void restartGame() {
     _score = 0;
     _currentRound = 1;
+    _displayRound = 1; // Reset display round
     _gameOver = false;
     _isTransitioning = false;
     _hintActive = false;

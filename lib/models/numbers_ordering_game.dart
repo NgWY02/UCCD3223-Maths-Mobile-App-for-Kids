@@ -10,6 +10,7 @@ class NumberOrderingGame extends ChangeNotifier {
   bool isAscending = true;
   int score = 0;
   int currentRound = 1;
+  int displayRound = 1; // This represents what's shown to the user
   bool gameOver = false;
   bool? lastAnswerCorrect;
   bool success = false;
@@ -41,6 +42,8 @@ class NumberOrderingGame extends ChangeNotifier {
   
   NumberOrderingGame(this.difficulty, {this.onPlaySound}) {
     _configureDifficulty();
+    currentRound = 1;
+    displayRound = 1; // Initialize display round
     generateNewRound();
     
     if (_hasTimeLimit) {
@@ -225,7 +228,7 @@ class NumberOrderingGame extends ChangeNotifier {
 
     // Either way (correct or incorrect), advance to next round after a delay
     if (currentRound < maxRounds) {
-      currentRound++;
+      currentRound++; // Only increment internal counter, not display counter
       // Auto-advance to next round after delay
       _autoAdvanceToNextRound();
     } else {
@@ -245,6 +248,9 @@ class NumberOrderingGame extends ChangeNotifier {
 
     // Wait 1.5 seconds before advancing to next round
     Future.delayed(Duration(milliseconds: 1500), () {
+      // Only update displayRound after the delay
+      displayRound = currentRound;
+      
       generateNewRound();
       isTransitioning = false;
       notifyListeners();
@@ -256,6 +262,7 @@ class NumberOrderingGame extends ChangeNotifier {
 
     score = 0;
     currentRound = 1;
+    displayRound = 1; // Reset display round too
     gameOver = false;
     _configureDifficulty(); // Reset hints and skips
     

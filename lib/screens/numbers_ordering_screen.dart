@@ -155,7 +155,7 @@ class _NumberOrderingScreenState extends State<NumberOrderingScreen> with Single
                       ],
                     ),
                     child: Text(
-                      'Round ${game.currentRound} of ${game.maxRounds}',
+                      'Round ${game.displayRound} of ${game.maxRounds}',
                       style: TextStyle(
                         fontSize: 18, 
                         fontWeight: FontWeight.bold,

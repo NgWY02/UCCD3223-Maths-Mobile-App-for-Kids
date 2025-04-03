@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         _soundManager.playButtonSound();
                         _navigateToDifficultySelection(
                           context, 
-                          'Number Duel', 
+                          'Number Comparison', 
                           Colors.red.shade300,
                           '🏁',
                           (difficulty) => _navigateToNumberDuel(context, difficulty)
