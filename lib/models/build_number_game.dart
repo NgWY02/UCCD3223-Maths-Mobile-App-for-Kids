@@ -373,11 +373,4 @@ class BuildNumberGame extends ChangeNotifier {
       ? 0 
       : selectedNumbers.fold(0, (sum, number) => sum + number);
   }
-  
-  // Make sure to clean up when the model is disposed
-  @override
-  void dispose() {
-    _timer?.cancel();
-    // If this class extends something with a dispose method, call super.dispose() here
-  }
 }

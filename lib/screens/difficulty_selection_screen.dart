@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'dart:math' as math;
 import '../utils/sound_manager.dart';
 
@@ -26,7 +25,6 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   int _selectedCard = -1;
-  final _audioPlayer = AudioPlayer();
   final bool _showConfetti = false;
   final _soundManager = SoundManager();
 

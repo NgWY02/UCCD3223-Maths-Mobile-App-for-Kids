@@ -207,7 +207,7 @@ Widget buildFeedbackMessage(bool? lastAnswerCorrect) {
   if (lastAnswerCorrect == null) return SizedBox.shrink();
   
   return AnimatedOpacity(
-    opacity: lastAnswerCorrect != null ? 1.0 : 0.0,
+    opacity: 1.0,
     duration: Duration(milliseconds: 300),
     child: Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
