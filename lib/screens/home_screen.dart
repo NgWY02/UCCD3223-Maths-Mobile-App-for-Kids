@@ -5,6 +5,7 @@ import 'number_composing_screen.dart';
 import 'difficulty_selection_screen.dart';
 import 'start_screen.dart';
 import '../utils/sound_manager.dart';
+import 'exam_mode_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,34 +17,33 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // Use sound manager instead of direct audio player
   final _soundManager = SoundManager();
-  // Removed _isMusicPlaying variable since we're removing the toggle button
-  
+
   // Animation controllers
   late AnimationController _bounceController;
   late AnimationController _rotateController;
-  
+
   @override
   void initState() {
     super.initState();
     // Use the dedicated method
     _soundManager.playHomeMusic();
-    
+
     // Setup animations
     _bounceController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1500),
     )..repeat(reverse: true);
-    
+
     _rotateController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 8000),
     )..repeat();
   }
-  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Use the updated method to check if home music should be restored
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_soundManager.currentMusic != 'sounds/home_music.mp3') {
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       }
     });
   }
-  
+
   @override
   void dispose() {
     _bounceController.dispose();
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onPressed: () {
             // Use sound manager for button sound
             _soundManager.playButtonSound();
-            
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => StartScreen()),
@@ -97,8 +97,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             end: Alignment.bottomCenter,
             colors: [
               Colors.indigo.shade500,
-              Colors.purple.shade400, 
-              Colors.deepPurple.shade300
+              Colors.purple.shade400,
+              Colors.deepPurple.shade300,
             ],
           ),
         ),
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           children: [
             // Background decorations
             ..._buildBackgroundDecorations(),
-            
+
             // Main content
             SafeArea(
               child: Center(
@@ -120,13 +120,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         return Transform.translate(
                           offset: Offset(0, _bounceController.value * -10),
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 25,
+                              vertical: 15,
+                            ),
                             decoration: BoxDecoration(
-                              color: Colors.yellow.shade100.withValues(alpha: 0.7),
+                              color: Colors.yellow.shade100.withValues(
+                                alpha: 0.7,
+                              ),
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.yellow.shade600.withValues(alpha: 0.5),
+                                  color: Colors.yellow.shade600.withValues(
+                                    alpha: 0.5,
+                                  ),
                                   blurRadius: 10,
                                   spreadRadius: 2,
                                 ),
@@ -135,75 +142,92 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             child: Text(
                               'Choose a Fun Game!',
                               style: TextStyle(
-                                fontSize: 28, 
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.deepPurple.shade700,
                               ),
                             ),
                           ),
                         );
-                      }
+                      },
                     ),
-                    
+
                     SizedBox(height: 40),
-                    
+
                     // Game buttons with improved design
                     _buildGameButton(
-                      context, 
-                      'Number Duel', 
-                      '🏁 Compare Numbers', 
+                      context,
+                      'Number Duel',
+                      '🏁 Compare Numbers',
                       Colors.red.shade300,
-                      Icons.compare_arrows, 
+                      Icons.compare_arrows,
                       () {
                         _soundManager.playButtonSound();
                         _navigateToDifficultySelection(
-                          context, 
-                          'Number Comparison', 
+                          context,
+                          'Number Comparison',
                           Colors.red.shade300,
                           '🏁',
-                          (difficulty) => _navigateToNumberDuel(context, difficulty)
+                          (difficulty) =>
+                              _navigateToNumberDuel(context, difficulty),
                         );
-                      }
+                      },
                     ),
-                    
+
                     SizedBox(height: 20),
-                    
+
                     _buildGameButton(
-                      context, 
-                      'Balloon Numbers', 
-                      '🎈 Order Numbers', 
+                      context,
+                      'Balloon Numbers',
+                      '🎈 Order Numbers',
                       Colors.green.shade300,
-                      Icons.bubble_chart, 
+                      Icons.bubble_chart,
                       () {
                         _soundManager.playButtonSound();
                         _navigateToDifficultySelection(
-                          context, 
-                          'Balloon Numbers', 
+                          context,
+                          'Number Ordering',
                           Colors.green.shade300,
                           '🎈',
-                          (difficulty) => _navigateToNumberLadder(context, difficulty)
+                          (difficulty) =>
+                              _navigateToNumberLadder(context, difficulty),
                         );
-                      }
+                      },
                     ),
-                    
+
                     SizedBox(height: 20),
-                    
+
                     _buildGameButton(
-                      context, 
-                      'Build a Number', 
-                      '🏗️ Compose Numbers', 
+                      context,
+                      'Build a Number',
+                      '🏗️ Compose Numbers',
                       Colors.orange.shade300,
-                      Icons.construction, 
+                      Icons.construction,
                       () {
                         _soundManager.playButtonSound();
                         _navigateToDifficultySelection(
-                          context, 
-                          'Build a Number', 
+                          context,
+                          'Number Composing',
                           Colors.orange.shade300,
                           '🏗️',
-                          (difficulty) => _navigateToBuildNumber(context, difficulty)
+                          (difficulty) =>
+                              _navigateToBuildNumber(context, difficulty),
                         );
-                      }
+                      },
+                    ),
+
+                    SizedBox(height: 20),
+
+                    _buildGameButton(
+                      context,
+                      'Exam Mode',
+                      '🧩 Mix of All Games',
+                      Colors.purple.shade300,
+                      Icons.school,
+                      () {
+                        _soundManager.playButtonSound();
+                        _showExamModeDialog(context);
+                      },
                     ),
                   ],
                 ),
@@ -214,10 +238,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
   }
-  
+
   List<Widget> _buildBackgroundDecorations() {
     final size = MediaQuery.of(context).size;
-    
+
     return [
       // Rotating sun/star in the corner
       Positioned(
@@ -254,10 +278,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             );
-          }
+          },
         ),
       ),
-      
+
       // Floating math symbols
       Positioned(
         left: 20,
@@ -281,14 +305,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     ];
   }
-  
+
   Widget _buildFloatingSymbol(String symbol, Color color, double delay) {
     return AnimatedBuilder(
       animation: _bounceController,
       builder: (context, child) {
         // Add delay to animation
         final delayedValue = ((_bounceController.value + delay) % 1.0);
-        
+
         return Transform.translate(
           offset: Offset(0, delayedValue * 15),
           child: Container(
@@ -317,69 +341,148 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
         );
-      }
+      },
     );
   }
-  
-  
+
   void _navigateToDifficultySelection(
-    BuildContext context, 
-    String gameName, 
+    BuildContext context,
+    String gameName,
     Color themeColor,
     String icon,
-    Function(String) onDifficultySelected
+    Function(String) onDifficultySelected,
   ) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DifficultySelectionScreen(
-          gameName: gameName,
-          themeColor: themeColor,
-          icon: icon,
-          onDifficultySelected: onDifficultySelected,
+        builder:
+            (context) => DifficultySelectionScreen(
+              gameName: gameName,
+              themeColor: themeColor,
+              icon: icon,
+              onDifficultySelected: onDifficultySelected,
+            ),
+      ),
+    );
+  }
+
+  void _navigateToNumberDuel(BuildContext context, String difficulty) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NumberComparisonScreen(difficulty: difficulty),
+      ),
+    );
+
+    // Use the ensureHomeMusic method instead
+    _soundManager.ensureHomeMusic();
+  }
+
+  void _navigateToNumberLadder(BuildContext context, String difficulty) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NumberOrderingScreen(difficulty: difficulty),
+      ),
+    );
+
+    // Use the ensureHomeMusic method instead
+    _soundManager.ensureHomeMusic();
+  }
+
+  void _navigateToBuildNumber(BuildContext context, String difficulty) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NumberComposingScreen(difficulty: difficulty),
+      ),
+    );
+
+    // Use the ensureHomeMusic method instead
+    _soundManager.ensureHomeMusic();
+  }
+
+  void _navigateToExamMode(BuildContext context, bool isMultiplayer) {
+    Navigator.of(context).pop(); // Close dialog
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExamModeScreen(
+          isMultiplayer: isMultiplayer,
         ),
       ),
     );
   }
-  
-  void _navigateToNumberDuel(BuildContext context, String difficulty) async {
-    await Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder: (context) => NumberComparisonScreen(difficulty: difficulty)
-      )
+
+  void _showExamModeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: Text(
+          'Choose Mode',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildExamModeButton(
+              'Single Player',
+              Icons.person,
+              Colors.blue[400]!,
+              () => _navigateToExamMode(context, false),
+            ),
+            SizedBox(height: 16),
+            _buildExamModeButton(
+              'Multiplayer',
+              Icons.people,
+              Colors.orange[400]!,
+              () => _navigateToExamMode(context, true),
+            ),
+          ],
+        ),
+      ),
     );
-    
-    // Use the ensureHomeMusic method instead
-    _soundManager.ensureHomeMusic();
   }
-  
-  void _navigateToNumberLadder(BuildContext context, String difficulty) async {
-    await Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder: (context) => NumberOrderingScreen(difficulty: difficulty)
-      )
+
+  Widget _buildExamModeButton(String text, IconData icon, Color color, VoidCallback onTap) {
+    return Material(
+      color: color,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          width: double.infinity,
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white),
+              SizedBox(width: 12),
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-    
-    // Use the ensureHomeMusic method instead
-    _soundManager.ensureHomeMusic();
   }
-  
-  void _navigateToBuildNumber(BuildContext context, String difficulty) async {
-    await Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder: (context) => NumberComposingScreen(difficulty: difficulty)
-      )
-    );
-    
-    // Use the ensureHomeMusic method instead
-    _soundManager.ensureHomeMusic();
-  }
-  
-  Widget _buildGameButton(BuildContext context, String title, String subtitle, 
-      Color color, IconData icon, VoidCallback onPressed) {
+
+  Widget _buildGameButton(
+    BuildContext context,
+    String title,
+    String subtitle,
+    Color color,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
       decoration: BoxDecoration(
@@ -401,10 +504,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: Ink(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  color,
-                  color.withValues(alpha:0.8),
-                ],
+                colors: [color, color.withValues(alpha: 0.8)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -422,11 +522,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       color: Colors.white24,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 30,
-                    ),
+                    child: Icon(icon, color: Colors.white, size: 30),
                   ),
                   SizedBox(width: 15),
                   // Game info
@@ -437,7 +533,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Text(
                           title,
                           style: TextStyle(
-                            fontSize: 22, 
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),

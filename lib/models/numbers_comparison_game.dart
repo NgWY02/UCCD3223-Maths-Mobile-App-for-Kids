@@ -106,37 +106,36 @@ class NumberComparisonGame with ChangeNotifier {
     notifyListeners();
   }
 
-  // Process a player's number selection
+  // Update the selectNumber method:
   void selectNumber(int selectedNumber) {
-    if (_isTransitioning) return; // Prevent multiple selections during transition
+    if (_isTransitioning) return;
     
-    int correctNumber;
-    if (_findBiggerNumber) {
-      correctNumber = _leftNumber > _rightNumber ? _leftNumber : _rightNumber;
-    } else {
-      correctNumber = _leftNumber < _rightNumber ? _leftNumber : _rightNumber;
-    }
+    int correctNumber = _findBiggerNumber
+        ? (_leftNumber > _rightNumber ? _leftNumber : _rightNumber)
+        : (_leftNumber < _rightNumber ? _leftNumber : _rightNumber);
     
-    // Check if the answer is correct
-    bool isCorrect = selectedNumber == correctNumber;
-    _lastAnswerCorrect = isCorrect;
-    
-    if (isCorrect) {
+    _lastAnswerCorrect = selectedNumber == correctNumber;
+    if (_lastAnswerCorrect!) {
       _score++;
     }
     
-    // Start transition to next round
     _isTransitioning = true;
-    
-    // Check if game is over
-    if (_currentRound >= _maxRounds) {
-      _gameOver = true;
-    } else {
-      _currentRound++; // Only increment internal round counter
-      // Don't update displayRound yet
-    }
-    
     notifyListeners();
+
+    // Show correct/wrong indicator for 1 second before showing "next round" message
+    Future.delayed(Duration(milliseconds: 1000), () {
+      if (_currentRound >= _maxRounds) {
+        _gameOver = true;
+        notifyListeners();
+      } else {
+        _currentRound++;
+        // Wait 500ms more before moving to next round
+        Future.delayed(Duration(milliseconds: 500), () {
+          prepareNextRound();
+          notifyListeners();
+        });
+      }
+    });
   }
 
   // Use a hint to highlight the correct answer
@@ -195,4 +194,5 @@ class NumberComparisonGame with ChangeNotifier {
     
     prepareNextRound();
   }
+  
 }

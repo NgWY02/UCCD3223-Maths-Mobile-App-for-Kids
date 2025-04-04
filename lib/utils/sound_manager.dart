@@ -17,48 +17,47 @@ class SoundManager {
   bool get isMusicEnabled => _isMusicEnabled;
   String? get currentMusic => _currentMusic;
   
-  // Enhanced method to play background music
+  // Fix playBackgroundMusic to use _playMusic
   Future<void> playBackgroundMusic(String assetPath) async {
     try {
-      // If the SAME music is already playing AND the player exists, don't restart it
+      // Don't play music if we're in the name input dialog
+      if (_currentMusic == "disabled_during_setup") {
+        print("Music disabled during player setup - skipping playback");
+        return;
+      }
+      
+      // If the same music is already playing, don't restart it
       if (_currentMusic == assetPath && _backgroundPlayer != null) {
-        print("Music is already playing: $assetPath - skipping");
+        print("Music already playing: $assetPath - skipping");
         return;
       }
       
       print("Attempting to play: $assetPath (Current: $_currentMusic)");
       
-      // Always stop previous music first
-      await stopBackgroundMusic();
-      
-      // Save current music path BEFORE attempting to play
-      _currentMusic = assetPath;
-      
       // Skip actual playback if sound is off
       if (!_isMusicEnabled) {
         print("Music is disabled, not playing");
+        _currentMusic = assetPath; // Still update current music
         return;
       }
       
-      _backgroundPlayer = AudioPlayer();
-      await _backgroundPlayer!.play(AssetSource(assetPath));
-      await _backgroundPlayer!.setReleaseMode(ReleaseMode.loop);
-      print("Now playing: $assetPath");
+      await _playMusic(assetPath);
+      _currentMusic = assetPath;
     } catch (e) {
       print("Error playing background music: $e");
     }
   }
   
-  // Dedicated method to play home music
+  // Fix playHomeMusic to be more consistent
   Future<void> playHomeMusic() async {
-    // Extra check - if home music is already playing, don't do anything
-    if (_currentMusic == 'sounds/home_music.mp3' && _backgroundPlayer != null) {
-      print("Home music is already playing - skipping");
-      return;
-    }
+    if (!_isMusicEnabled) return;
     
-    print("Starting home music");
-    await playBackgroundMusic('sounds/home_music.mp3');
+    // Only change music if we're not already playing home music
+    if (_currentMusic != 'sounds/home_music.mp3') {
+      print("Playing home music");
+      await stopBackgroundMusic();
+      await playBackgroundMusic('sounds/home_music.mp3');
+    }
   }
   
   // Additional method to ensure single music instance when navigating
@@ -72,23 +71,42 @@ class SoundManager {
     }
   }
   
-  // Play specific game music
+  // Fix the playGameMusic method to correctly identify exam mode music
   Future<void> playGameMusic(String gameName) async {
+    if (!_isMusicEnabled) return;
+    
+    print("Request to play game music: $gameName");
+    
+    // Skip if music is disabled during setup
+    if (_currentMusic == "disabled_during_setup") {
+      print("Music is disabled during setup - ignoring request");
+      return;
+    }
+    
+    // Always stop current music first
+    await stopBackgroundMusic();
+    
     String musicPath;
     switch (gameName) {
+      case 'Exam_Mode':
+        musicPath = 'sounds/exam_mode_music.mp3';
+        break;
       case 'Number_Comparison':
         musicPath = 'sounds/number_comparison_music.mp3';
         break;
-      case 'Number_Ordering': // Add this alias
+      case 'Number_Ordering':
         musicPath = 'sounds/number_ordering_music.mp3';
         break;
       case 'Number_Composing':
         musicPath = 'sounds/number_composing_music.mp3';
         break;
       default:
-        musicPath = 'sounds/theme_music.mp3'; // fallback
+        musicPath = 'sounds/home_music.mp3';
     }
-    await playBackgroundMusic(musicPath);
+    
+    print("Playing game music: $musicPath for game: $gameName");
+    await _playMusic(musicPath);
+    _currentMusic = musicPath;  // Store the path, not the game name
   }
   
   // Restore home music method (used when returning from games)
@@ -96,17 +114,17 @@ class SoundManager {
     await playHomeMusic();
   }
   
+  
   // Robust method to stop background music
   Future<void> stopBackgroundMusic() async {
     if (_backgroundPlayer != null) {
-      print("Stopping previous music: $_currentMusic");
       try {
         await _backgroundPlayer!.stop();
         await _backgroundPlayer!.dispose();
+        _backgroundPlayer = null;
+        _currentMusic = null;
       } catch (e) {
         print("Error stopping music: $e");
-      } finally {
-        _backgroundPlayer = null;
       }
     }
   }
@@ -179,4 +197,61 @@ class SoundManager {
   Future<void> dispose() async {
     await stopBackgroundMusic();
   }
+
+  // Add this method to SoundManager class
+  void disableMusicDuringSetup() {
+    _currentMusic = "disabled_during_setup";
+  }
+
+  void enableMusic() {
+  print("Enabling music again");
+  _currentMusic = null; // Clear the disabled flag
+}
+
+// Add a new low-level method to actually play the music
+Future<void> _playMusic(String assetPath) async {
+  try {
+    if (_backgroundPlayer != null) {
+      await _backgroundPlayer!.stop();
+      await _backgroundPlayer!.dispose();
+      _backgroundPlayer = null;
+    }
+    
+    _backgroundPlayer = AudioPlayer();
+    await _backgroundPlayer!.play(AssetSource(assetPath));
+    await _backgroundPlayer!.setReleaseMode(ReleaseMode.loop);
+    print("Now playing: $assetPath");
+  } catch (e) {
+    print("Error playing music: $e");
+  }
+}
+
+// Complete replacement for forceExamModeMusic method
+Future<void> forceExamModeMusic() async {
+  print("FORCING exam mode music with NO CHECKS");
+  // Stop any existing player first
+  if (_backgroundPlayer != null) {
+    try {
+      await _backgroundPlayer!.stop();
+      await _backgroundPlayer!.dispose();
+    } catch (e) {
+      print("Error stopping previous music: $e");
+    }
+    _backgroundPlayer = null;
+  }
+  
+  try {
+    // Create new player and play directly - bypass all normal checks
+    final player = AudioPlayer();
+    await player.setReleaseMode(ReleaseMode.loop);
+    await player.play(AssetSource('sounds/exam_mode_music.mp3'));
+    
+    // Only assign to _backgroundPlayer after successful playback
+    _backgroundPlayer = player;
+    _currentMusic = 'sounds/exam_mode_music.mp3';
+    print("✓ Successfully started exam mode music");
+  } catch (e) {
+    print("ERROR playing exam mode music: $e");
+  }
+}
 }
