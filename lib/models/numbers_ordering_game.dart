@@ -76,7 +76,7 @@ class NumberOrderingGame extends ChangeNotifier {
         _hintsRemaining = 1;
         _skipsRemaining = 1;
         _hasTimeLimit = true;
-        _timeLimit = 30; // seconds
+        _timeLimit = 20; // seconds
         break;
       default:
         maxRounds = 8;

@@ -156,78 +156,65 @@ class ExamModeGame extends ChangeNotifier {
         // Generate target number in range 2-50
         targetNumber = 2 + _random.nextInt(49); // 2 to 50 inclusive
         selectedNumbers.clear();
+        selectedIndices.clear();
         
-        // Create a guaranteed solution with unique numbers
-        Set<int> uniqueNumbers = {};
-        
-        // First solution number - avoid extreme values
+        // Create a guaranteed solution by selecting a valid pair of numbers
         int firstNumber = 1 + _random.nextInt(targetNumber - 1);
         int secondNumber = targetNumber - firstNumber;
         
-        // Add solution numbers to set
+        // Create a set to avoid duplicate values
+        Set<int> uniqueNumbers = {};
+        
+        // First add our solution numbers
         uniqueNumbers.add(firstNumber);
         uniqueNumbers.add(secondNumber);
         
-        // Fill remaining slots with random numbers ensuring uniqueness
-        int maxAttempts = 100;
-        int attempt = 0;
-        
-        while (uniqueNumbers.length < 10 && attempt < maxAttempts) {
-          // Generate random numbers in a reasonable range
+        // Fill the remaining slots with other numbers
+        while (uniqueNumbers.length < 10) {
+          // Generate a random number between 1 and 50
           int newNum = 1 + _random.nextInt(50);
           
-          // Skip adding numbers that equal the target (too obvious)
-          if (newNum == targetNumber) {
-            attempt++;
-            continue;
-          }
+          // Skip if it's equal to the target (makes it too obvious)
+          if (newNum == targetNumber) continue;
           
-          // Skip adding numbers that with any existing number sum to target
-          bool createsAnotherSolution = false;
-          for (int existing in uniqueNumbers) {
-            if (existing + newNum == targetNumber) {
-              createsAnotherSolution = true;
-              break;
-            }
-          }
-          
-          // If this number creates another valid solution, that's okay for 
-          // a small percentage of the time to add variety
-          if (createsAnotherSolution && _random.nextDouble() > 0.2) {
-            attempt++;
-            continue;
-          }
-          
-          // Add unique number
+          // Add the number if it's unique
           uniqueNumbers.add(newNum);
-          attempt++;
         }
         
-        // If we couldn't get 10 unique numbers, fill with safe values
-        while (uniqueNumbers.length < 10) {
-          // Add small numbers unlikely to create solutions
-          int fillerNum = uniqueNumbers.length + 51; // Numbers > 50
-          uniqueNumbers.add(fillerNum);
-        }
-        
-        // Convert set to list and shuffle
+        // Convert to list and shuffle
         numberOptions = uniqueNumbers.toList()..shuffle(_random);
         
-        // Safety check - ensure solution numbers are in the options
-        if (!numberOptions.contains(firstNumber)) {
+        // Double-check that our solution numbers are included
+        // This ensures we always have a valid solution
+        bool containsFirst = numberOptions.contains(firstNumber);
+        bool containsSecond = numberOptions.contains(secondNumber);
+        
+        // If either solution number is missing after shuffling, force them back in
+        if (!containsFirst) {
           numberOptions[0] = firstNumber;
         }
-        if (!numberOptions.contains(secondNumber)) {
-          // Find position that doesn't have first solution number
-          int replaceIndex = 1;
-          while (numberOptions[replaceIndex] == firstNumber) {
-            replaceIndex++;
-            if (replaceIndex >= numberOptions.length) {
-              replaceIndex = 1;
+        if (!containsSecond) {
+          // Make sure we don't replace the first solution number
+          int replaceIndex = numberOptions.indexOf(firstNumber) == 1 ? 2 : 1;
+          numberOptions[replaceIndex] = secondNumber;
+        }
+        
+        // Verify that the solution exists
+        bool hasSolution = false;
+        for (int i = 0; i < numberOptions.length; i++) {
+          for (int j = i + 1; j < numberOptions.length; j++) {
+            if (numberOptions[i] + numberOptions[j] == targetNumber) {
+              hasSolution = true;
               break;
             }
           }
-          numberOptions[replaceIndex] = secondNumber;
+          if (hasSolution) break;
+        }
+        
+        // If no solution exists, force one
+        if (!hasSolution) {
+          numberOptions[0] = firstNumber;
+          numberOptions[1] = secondNumber;
         }
         
         break;

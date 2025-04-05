@@ -199,65 +199,88 @@ class _ExamModeScreenState extends State<ExamModeScreen>
   }
 
   Future<List<String>?> _getPlayerNames(BuildContext context) {
+    String? errorMessage; // Nullable String to store the error message
+
     return showDialog<List<String>>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => WillPopScope(
-        onWillPop: () async => false,
-        child: AlertDialog(
-          backgroundColor: Colors.grey[900],
-          title: Text(
-            'Enter Player Names',
-            style: TextStyle(color: Colors.white),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _player1Controller,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              backgroundColor: Colors.grey[900],
+              title: Text(
+                'Enter Player Names',
                 style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Player 1',
-                  labelStyle: TextStyle(color: Colors.blue[300]),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[300]!),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _player1Controller,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: 'Player 1',
+                      labelStyle: TextStyle(color: Colors.blue[300]),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue[300]!),
+                      ),
+                    ),
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                    textInputAction: TextInputAction.next,
                   ),
-                ),
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                textInputAction: TextInputAction.next,
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _player2Controller,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Player 2',
-                  labelStyle: TextStyle(color: Colors.orange[300]),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.orange[300]!),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: _player2Controller,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: 'Player 2',
+                      labelStyle: TextStyle(color: Colors.orange[300]),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.orange[300]!),
+                      ),
+                    ),
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                    textInputAction: TextInputAction.done,
                   ),
+                  if (errorMessage != null) // Display error message if it exists
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        errorMessage ?? '', // Provide a default empty string
+                        style: TextStyle(color: Colors.red, fontSize: 14),
+                      ),
+                    ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: Text(
+                    'Start Game',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  onPressed: () {
+                    final player1Name = _player1Controller.text.trim();
+                    final player2Name = _player2Controller.text.trim();
+
+                    if (player1Name.isEmpty || player2Name.isEmpty) {
+                      setState(() {
+                        errorMessage = 'Both names must be filled.';
+                      });
+                    } else if (player1Name == player2Name) {
+                      setState(() {
+                        errorMessage = 'Player names must be different.';
+                      });
+                    } else {
+                      Navigator.of(context).pop([player1Name, player2Name]);
+                    }
+                  },
                 ),
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                textInputAction: TextInputAction.done,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text(
-                'Start Game',
-                style: TextStyle(color: Colors.green),
-              ),
-              onPressed: () {
-                if (_player1Controller.text.isNotEmpty &&
-                    _player2Controller.text.isNotEmpty) {
-                  Navigator.of(context).pop(
-                      [_player1Controller.text, _player2Controller.text]);
-                }
-              },
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -678,39 +701,50 @@ class _ExamModeScreenState extends State<ExamModeScreen>
 
   void _showPlayerSwitchCountdown(BuildContext context, ExamModeGame game) {
     int initialCount = 3;
+    bool dialogActive = true;
     
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
-        // Create the countdown state object
         final countdownState = _CountdownState(initialCount);
         
         return StatefulBuilder(
-          builder: (context, setState) {
-            // Create timer only once when dialog is shown
+          builder: (builderContext, setState) {
             countdownState.timer ??= Timer.periodic(Duration(seconds: 1), (timer) {
-                setState(() {
-                  countdownState.count--;
-                });
-                
-                if (countdownState.count < 0) {
+                if (!dialogActive) {
                   timer.cancel();
                   countdownState.timer = null;
-                  
-                  Navigator.of(dialogContext).pop();
-                  
-                  // Small delay before switching player
-                  Future.delayed(Duration(milliseconds: 100), () {
-                    if (mounted) {
-                      game.switchToPlayer2();
-                    }
+                  return;
+                }
+                
+                if (dialogActive) {
+                  setState(() {
+                    countdownState.count--;
                   });
+                  
+                  if (countdownState.count < 0) {
+                    timer.cancel();
+                    countdownState.timer = null;
+                    
+                    if (dialogActive) {
+                      dialogActive = false;
+                      Navigator.of(dialogContext).pop();
+                      
+                      // Small delay before switching player
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        if (mounted) {
+                          game.switchToPlayer2();
+                        }
+                      });
+                    }
+                  }
                 }
               });
             
             return WillPopScope(
               onWillPop: () {
+                dialogActive = false;
                 if (countdownState.timer != null) {
                   countdownState.timer!.cancel();
                   countdownState.timer = null;
@@ -768,40 +802,50 @@ class _ExamModeScreenState extends State<ExamModeScreen>
           },
         );
       },
-    );
+    ).then((_) {
+      dialogActive = false;
+    });
   }
 
   void _showPlayer1Countdown(BuildContext context, String playerName) {
     int initialCount = 3;
+    bool dialogActive = true;
     
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
-        // Create the countdown state object
         final countdownState = _CountdownState(initialCount);
         
         return StatefulBuilder(
-          builder: (context, setState) {
-            // Create timer only once when dialog is shown
+          builder: (builderContext, setState) {
             countdownState.timer ??= Timer.periodic(Duration(seconds: 1), (timer) {
-              setState(() {
-                countdownState.count--;
+                if (!dialogActive) {
+                  timer.cancel();
+                  countdownState.timer = null;
+                  return;
+                }
+                
+                if (dialogActive) {
+                  setState(() {
+                    countdownState.count--;
+                  });
+                  
+                  if (countdownState.count < 0) {
+                    timer.cancel();
+                    countdownState.timer = null;
+                    
+                    if (dialogActive) {
+                      dialogActive = false;
+                      Navigator.of(dialogContext).pop();
+                    }
+                  }
+                }
               });
-              
-              if (countdownState.count < 0) {
-                timer.cancel();
-                countdownState.timer = null;
-                
-                Navigator.of(dialogContext).pop();
-                
-                // No need to call switchToPlayer2 or any other method here
-                // Just let the game start normally for player 1
-              }
-            });
             
             return WillPopScope(
               onWillPop: () {
+                dialogActive = false;
                 if (countdownState.timer != null) {
                   countdownState.timer!.cancel();
                   countdownState.timer = null;
@@ -859,12 +903,18 @@ class _ExamModeScreenState extends State<ExamModeScreen>
           },
         );
       },
-    );
+    ).then((_) {
+      dialogActive = false;
+    });
   }
 
   // Add this method for single player countdown
   void _showSinglePlayerCountdown(BuildContext context) {
     int initialCount = 3;
+    Timer? countdownTimer;
+    
+    // This variable helps us track if the dialog was closed early
+    bool dialogActive = true;
     
     showDialog(
       context: context,
@@ -874,23 +924,38 @@ class _ExamModeScreenState extends State<ExamModeScreen>
         final countdownState = _CountdownState(initialCount);
         
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (builderContext, setState) {
             // Create timer only once when dialog is shown
             countdownState.timer ??= Timer.periodic(Duration(seconds: 1), (timer) {
-              setState(() {
-                countdownState.count--;
+                // First check if the dialog is still active
+                if (!dialogActive) {
+                  timer.cancel();
+                  countdownState.timer = null;
+                  return;
+                }
+                
+                // Try to update state safely
+                if (dialogActive) {
+                  setState(() {
+                    countdownState.count--;
+                  });
+                  
+                  if (countdownState.count < 0) {
+                    timer.cancel();
+                    countdownState.timer = null;
+                    
+                    // Check if dialog is still active before popping
+                    if (dialogActive) {
+                      dialogActive = false;
+                      Navigator.of(dialogContext).pop();
+                    }
+                  }
+                }
               });
-              
-              if (countdownState.count < 0) {
-                timer.cancel();
-                countdownState.timer = null;
-                Navigator.of(dialogContext).pop();
-                // Single player mode just continues after countdown
-              }
-            });
             
             return WillPopScope(
               onWillPop: () {
+                dialogActive = false;
                 if (countdownState.timer != null) {
                   countdownState.timer!.cancel();
                   countdownState.timer = null;
@@ -898,7 +963,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
                 return Future.value(true);
               },
               child: AlertDialog(
-                backgroundColor: Colors.green.shade800.withOpacity(0.9), // Green for Single Player
+                backgroundColor: Colors.green.shade800.withOpacity(0.9),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -948,7 +1013,14 @@ class _ExamModeScreenState extends State<ExamModeScreen>
           },
         );
       },
-    );
+    ).then((_) {
+      // Ensure timer is cleaned up when dialog is closed
+      dialogActive = false;
+      if (countdownTimer != null) {
+        countdownTimer!.cancel();
+        countdownTimer = null;
+      }
+    });
   }
 }
 
