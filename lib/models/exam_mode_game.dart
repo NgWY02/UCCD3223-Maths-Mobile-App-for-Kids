@@ -57,7 +57,7 @@ class ExamModeGame extends ChangeNotifier {
     required this.players,
     required this.onPlaySound,
     required this.isMultiplayer,  // Add this parameter
-  }) : remainingSeconds = isMultiplayer ? 60 : 120 {  // Initialize based on mode
+  }) : remainingSeconds = isMultiplayer ? 64 : 124 {  // Initialize based on mode
     // Initialize the question types for both players
     _initializeQuestionTypes();
     generateNextQuestion();
@@ -283,10 +283,6 @@ class ExamModeGame extends ChangeNotifier {
     
     // Explicitly notify listeners about the change
     notifyListeners();
-  }
-
-  void selectNumber(int number) {
-    // Implement number selection logic
   }
 
   String getCurrentGameTypeLabel() {
