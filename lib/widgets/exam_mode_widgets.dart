@@ -417,10 +417,11 @@ class _OrderingGameWidgetState extends State<OrderingGameWidget>
       if (game.isMultiplayer) {
         if (game.currentQuestion >= 10 && game.currentPlayerIndex == 0) {
           // First player finished their 10 questions
-          game.currentPlayerIndex = 1;
-          game.currentQuestion = 1;
-          game.remainingSeconds = 60; // Reset timer for second player
-          game.startTimer(); // Restart timer
+          if (game.onPlayerSwitch != null) {
+            game.onPlayerSwitch!(); // Trigger the player switch callback
+          } else {
+            game.switchToPlayer2();
+          }
         } else if (game.currentQuestion >= 10 && game.currentPlayerIndex == 1) {
           // Second player finished their 10 questions
           game.gameOver = true;
@@ -753,7 +754,7 @@ class _ComposingGameWidgetState extends State<ComposingGameWidget>
                   ),
                 ),
                 child: Text(
-                  'Submit',
+                  'Submit Answer',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

@@ -290,7 +290,7 @@ class _NumberComposingScreenState extends State<NumberComposingScreen> with Sing
               // Submit button - keep this with reduced vertical padding
               if (game.selectedNumbers.length >= 2 && !game.isTransitioning)
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 5.0 : 10.0), // Reduced padding
+                  padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 2.0 : 5.0), // Reduced padding
                   child: ScaleTransition(
                     scale: _bounceAnimation,
                     child: ElevatedButton(
@@ -301,18 +301,18 @@ class _NumberComposingScreenState extends State<NumberComposingScreen> with Sing
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green.shade500,
                         padding: EdgeInsets.symmetric(
-                          horizontal: 30, 
-                          vertical: isSmallScreen ? 8 : 12, // Reduced vertical padding
+                          horizontal: isSmallScreen ? 15 : 20,
+                          vertical: isSmallScreen ? 6 : 8, // Reduced vertical padding
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        elevation: 5,
+                        elevation: 3,
                       ),
                       child: Text(
                         'Submit Answer',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: isSmallScreen ? 16 : 18, // Reduced font size
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),

@@ -23,8 +23,8 @@ class NumberOrderingGame extends ChangeNotifier {
   int _hintsRemaining = 0;
   int _skipsRemaining = 0;
   bool _hasTimeLimit = false;
-  int _timeLimit = 30; // seconds
-  int _remainingTime = 30;
+  int _timeLimit = 20; // seconds
+  int _remainingTime = 20;
   Timer? _timer;
   int _hintPosition = -1;
   

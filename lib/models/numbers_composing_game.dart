@@ -76,7 +76,7 @@ class NumberComposingGame extends ChangeNotifier {
         _hintsRemaining = 1;
         _skipsRemaining = 1;
         _hasTimeLimit = true; // Add time limit for hard mode
-        _timeLimit = 20; // 20 seconds per round for hard mode
+        _timeLimit = 30; // 20 seconds per round for hard mode
         break;
       default:
         _minTargetNumber = 2;

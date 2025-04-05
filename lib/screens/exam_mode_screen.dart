@@ -4,6 +4,7 @@ import '../models/exam_mode_game.dart';
 import '../models/player.dart';
 import '../utils/sound_manager.dart';
 import '../widgets/exam_mode_widgets.dart';
+import 'dart:async';
 
 class ExamModeScreen extends StatefulWidget {
   final bool isMultiplayer;
@@ -31,6 +32,11 @@ class _ExamModeScreenState extends State<ExamModeScreen>
       _soundManager.stopBackgroundMusic();
       _soundManager.playGameMusic('Exam_Mode');
       _players = [Player("Player 1")];
+      
+      // Add post-frame callback to show countdown for single player
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showSinglePlayerCountdown(context);
+      });
     } else {
       // For multiplayer, initialize players which will handle music
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -58,6 +64,9 @@ class _ExamModeScreenState extends State<ExamModeScreen>
       // Wait for UI to update before changing music
       await Future.delayed(Duration(milliseconds: 300));
       await _soundManager.forceExamModeMusic();
+      
+      // Show countdown for Player 1 before starting the game
+      _showPlayer1Countdown(context, names[0]);
     } else {
       Navigator.of(context).pop();
     }
@@ -160,11 +169,22 @@ class _ExamModeScreenState extends State<ExamModeScreen>
           child: _players == null
               ? const Center(child: CircularProgressIndicator())
               : ChangeNotifierProvider(
-                  create: (_) => ExamModeGame(
-                    players: _players!,
-                    onPlaySound: _playSound,
-                    isMultiplayer: widget.isMultiplayer, // Add this line
-                  ),
+                  create: (_) {
+                    final game = ExamModeGame(
+                      players: _players!,
+                      onPlaySound: _playSound,
+                      isMultiplayer: widget.isMultiplayer,
+                    );
+                    
+                    // Add player switch callback for multiplayer
+                    if (widget.isMultiplayer) {
+                      game.onPlayerSwitch = () {
+                        _showPlayerSwitchCountdown(context, game);
+                      };
+                    }
+                    
+                    return game;
+                  },
                   child: Consumer<ExamModeGame>(
                     builder: (context, game, child) {
                       return game.gameOver
@@ -655,6 +675,288 @@ class _ExamModeScreenState extends State<ExamModeScreen>
       ),
     );
   }
+
+  void _showPlayerSwitchCountdown(BuildContext context, ExamModeGame game) {
+    int initialCount = 3;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        // Create the countdown state object
+        final countdownState = _CountdownState(initialCount);
+        
+        return StatefulBuilder(
+          builder: (context, setState) {
+            // Create timer only once when dialog is shown
+            countdownState.timer ??= Timer.periodic(Duration(seconds: 1), (timer) {
+                setState(() {
+                  countdownState.count--;
+                });
+                
+                if (countdownState.count < 0) {
+                  timer.cancel();
+                  countdownState.timer = null;
+                  
+                  Navigator.of(dialogContext).pop();
+                  
+                  // Small delay before switching player
+                  Future.delayed(Duration(milliseconds: 100), () {
+                    if (mounted) {
+                      game.switchToPlayer2();
+                    }
+                  });
+                }
+              });
+            
+            return WillPopScope(
+              onWillPop: () {
+                if (countdownState.timer != null) {
+                  countdownState.timer!.cancel();
+                  countdownState.timer = null;
+                }
+                return Future.value(true);
+              },
+              child: AlertDialog(
+                backgroundColor: Colors.purple.shade900.withOpacity(0.9),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "${game.players[1].name}'s Turn",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Get ready to solve 10 math puzzles!",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 30),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Text(
+                          countdownState.count > 0 ? "${countdownState.count}" : "GO!",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple.shade900,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showPlayer1Countdown(BuildContext context, String playerName) {
+    int initialCount = 3;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        // Create the countdown state object
+        final countdownState = _CountdownState(initialCount);
+        
+        return StatefulBuilder(
+          builder: (context, setState) {
+            // Create timer only once when dialog is shown
+            countdownState.timer ??= Timer.periodic(Duration(seconds: 1), (timer) {
+              setState(() {
+                countdownState.count--;
+              });
+              
+              if (countdownState.count < 0) {
+                timer.cancel();
+                countdownState.timer = null;
+                
+                Navigator.of(dialogContext).pop();
+                
+                // No need to call switchToPlayer2 or any other method here
+                // Just let the game start normally for player 1
+              }
+            });
+            
+            return WillPopScope(
+              onWillPop: () {
+                if (countdownState.timer != null) {
+                  countdownState.timer!.cancel();
+                  countdownState.timer = null;
+                }
+                return Future.value(true);
+              },
+              child: AlertDialog(
+                backgroundColor: Colors.blue.shade700.withOpacity(0.9), // Blue for Player 1
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "$playerName's Turn",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Get ready to solve 10 math puzzles!",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 30),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Text(
+                          countdownState.count > 0 ? "${countdownState.count}" : "GO!",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade700, // Match dialog color
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // Add this method for single player countdown
+  void _showSinglePlayerCountdown(BuildContext context) {
+    int initialCount = 3;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        // Create the countdown state object
+        final countdownState = _CountdownState(initialCount);
+        
+        return StatefulBuilder(
+          builder: (context, setState) {
+            // Create timer only once when dialog is shown
+            countdownState.timer ??= Timer.periodic(Duration(seconds: 1), (timer) {
+              setState(() {
+                countdownState.count--;
+              });
+              
+              if (countdownState.count < 0) {
+                timer.cancel();
+                countdownState.timer = null;
+                Navigator.of(dialogContext).pop();
+                // Single player mode just continues after countdown
+              }
+            });
+            
+            return WillPopScope(
+              onWillPop: () {
+                if (countdownState.timer != null) {
+                  countdownState.timer!.cancel();
+                  countdownState.timer = null;
+                }
+                return Future.value(true);
+              },
+              child: AlertDialog(
+                backgroundColor: Colors.green.shade800.withOpacity(0.9), // Green for Single Player
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Get Ready!",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Solve 20 math puzzles to get the highest score!",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 30),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Text(
+                          countdownState.count > 0 ? "${countdownState.count}" : "GO!",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _CountdownState {
+  int count;
+  Timer? timer;
+  
+  _CountdownState(this.count);
 }
 
 Widget buildFeedbackMessage(bool? isCorrect) {

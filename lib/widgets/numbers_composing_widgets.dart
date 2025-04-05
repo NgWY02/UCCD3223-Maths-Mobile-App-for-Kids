@@ -115,12 +115,12 @@ Widget buildSumDisplay(int currentSum, int targetNumber) {
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: textColor, size: 28),
+        Icon(icon, color: textColor, size: 20),
         const SizedBox(width: 10),
         Text(
           'Sum: $currentSum',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
             color: textColor,
           ),
@@ -210,12 +210,12 @@ Widget buildFeedbackMessage(bool? lastAnswerCorrect) {
     opacity: 1.0,
     duration: Duration(milliseconds: 300),
     child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: lastAnswerCorrect 
             ? Colors.green.shade100 
             : Colors.red.shade100,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: lastAnswerCorrect 
               ? Colors.green.shade600 
@@ -233,15 +233,15 @@ Widget buildFeedbackMessage(bool? lastAnswerCorrect) {
             color: lastAnswerCorrect 
                 ? Colors.green.shade700 
                 : Colors.red.shade700,
-            size: 24,
+            size: 20,
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 6),
           Text(
             lastAnswerCorrect 
                 ? 'Correct! Good job!' 
                 : 'Not quite right!',
             style: TextStyle(
-              fontSize: 18,
+              fontSize:  18,
               fontWeight: FontWeight.bold,
               color: lastAnswerCorrect 
                   ? Colors.green.shade700 
@@ -253,6 +253,7 @@ Widget buildFeedbackMessage(bool? lastAnswerCorrect) {
     ),
   );
 }
+
 
 // Show instructions dialog
 void showBuildNumberInstructions(BuildContext context, String difficulty, int hintsRemaining, int skipsRemaining) {
