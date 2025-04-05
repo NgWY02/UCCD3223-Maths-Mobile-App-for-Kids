@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       context,
                       'Exam Mode',
                       '🧩 Mix of All Games',
-                      Colors.purple.shade300,
+                      const Color.fromARGB(255, 13, 13, 13),
                       Icons.school,
                       () {
                         _soundManager.playButtonSound();

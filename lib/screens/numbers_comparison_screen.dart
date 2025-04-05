@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/numbers_comparison_game.dart';
 import '../widgets/numbers_comparison_widgets.dart';
 import '../utils/sound_manager.dart';
+import 'dart:async';
 
 class NumberComparisonScreen extends StatefulWidget {
   final String difficulty;
@@ -22,6 +23,8 @@ class _NumberComparisonScreenState extends State<NumberComparisonScreen> with Si
   bool _timerActive = false;
   final _soundManager = SoundManager();
   bool _isMusicPlaying = true;
+  // Add a timer field to track the timer
+  Timer? _timer;
   
   @override
   void initState() {
@@ -47,6 +50,7 @@ class _NumberComparisonScreenState extends State<NumberComparisonScreen> with Si
   
   @override
   void dispose() {
+    _timer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -60,38 +64,44 @@ class _NumberComparisonScreenState extends State<NumberComparisonScreen> with Si
   }
   
   void _startTimer(NumberComparisonGame game) {
-    if (game.getTimeLimit > 0 && !_timerActive && !game.isTransitioning) {
+    // Cancel any existing timer first
+    _timer?.cancel();
+    
+    if (game.getTimeLimit > 0 && !game.isTransitioning) {
       _timerActive = true;
       _timeRemaining = game.getTimeLimit;
       
-      Future.doWhile(() async {
-        await Future.delayed(Duration(seconds: 1));
-        if (mounted && !game.isTransitioning) { // Don't tick down during transitions
-          setState(() {
-            _timeRemaining--;
-          });
+      // Use a standard Timer instead of Future.doWhile
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        if (!mounted || game.isTransitioning) {
+          timer.cancel();
+          _timerActive = false;
+          return;
+        }
+        
+        setState(() {
+          _timeRemaining--;
+        });
+        
+        if (_timeRemaining <= 0) {
+          timer.cancel();
+          _timerActive = false;
           
-          if (_timeRemaining <= 0) {
-            // Time's up - count as wrong answer
-            HapticFeedback.heavyImpact();
-            _playSound(false);
-            game.selectNumber(-1); // An invalid number that can't be correct
-            _timerActive = false;
-            
-            // Add delay before next round
-            if (!game.gameOver) {
-              Future.delayed(Duration(milliseconds: 1500), () {
-                if (mounted) {
-                  game.prepareNextRound(); // Advance to next round after delay
-                  setState(() {}); // Refresh UI
-                }
-              });
-            }
-            
-            return false;
+          // Time's up - count as wrong answer
+          HapticFeedback.heavyImpact();
+          _playSound(false);
+          game.selectNumber(-1); // An invalid number that can't be correct
+          
+          // Add delay before next round
+          if (!game.gameOver) {
+            Future.delayed(Duration(milliseconds: 1500), () {
+              if (mounted) {
+                game.prepareNextRound(); // Advance to next round after delay
+                setState(() {}); // Refresh UI
+              }
+            });
           }
         }
-        return _timerActive && mounted && !game.isTransitioning;
       });
     }
   }

@@ -491,7 +491,5 @@ class ExamModeGame extends ChangeNotifier {
     _timer?.cancel();
     super.dispose();
   }
-
-  // ... implement other necessary methods ...
 }
 
