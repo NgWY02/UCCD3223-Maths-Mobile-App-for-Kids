@@ -298,7 +298,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
@@ -385,7 +385,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(16),
-          color: Colors.black.withOpacity(0.1),
+          color: Colors.black.withValues(alpha: 0.1),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: game.players.map((player) {
@@ -567,7 +567,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
       decoration: BoxDecoration(
         color: game.remainingSeconds <= 30
             ? Colors.red.shade400
-            : Colors.white.withOpacity(0.8),
+            : Colors.white.withValues(alpha:0.8),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(color: Colors.black26, blurRadius: 5, offset: Offset(0, 3)),
@@ -610,7 +610,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Text(
@@ -631,7 +631,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
             decoration: BoxDecoration(
               color: game.remainingSeconds <= 30 
                   ? Colors.red.shade400 
-                  : Colors.white.withOpacity(0.8),
+                  : Colors.white.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Row(
@@ -685,7 +685,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16),
-      color: Colors.black.withOpacity(0.1),
+      color: Colors.black.withValues(alpha:0.1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: game.players.map((player) {
@@ -752,7 +752,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
                 return Future.value(true);
               },
               child: AlertDialog(
-                backgroundColor: Colors.purple.shade900.withOpacity(0.9),
+                backgroundColor: Colors.purple.shade900.withValues(alpha: 0.9),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -853,7 +853,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
                 return Future.value(true);
               },
               child: AlertDialog(
-                backgroundColor: Colors.blue.shade700.withOpacity(0.9), // Blue for Player 1
+                backgroundColor: Colors.blue.shade700.withValues(alpha: 0.9), // Blue for Player 1
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -963,7 +963,7 @@ class _ExamModeScreenState extends State<ExamModeScreen>
                 return Future.value(true);
               },
               child: AlertDialog(
-                backgroundColor: Colors.green.shade800.withOpacity(0.9),
+                backgroundColor: Colors.green.shade800.withValues(alpha: 0.9),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

@@ -617,7 +617,7 @@ class _ComposingGameWidgetState extends State<ComposingGameWidget>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 10,
                         offset: Offset(0, 4),
                       ),
@@ -634,7 +634,7 @@ class _ComposingGameWidgetState extends State<ComposingGameWidget>
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
                     Text(
@@ -657,7 +657,7 @@ class _ComposingGameWidgetState extends State<ComposingGameWidget>
               margin: EdgeInsets.only(bottom: 12),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.3),  // Always use white background
+                color: Colors.white.withValues(alpha: 0.3),  // Always use white background
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -679,7 +679,7 @@ class _ComposingGameWidgetState extends State<ComposingGameWidget>
             ),
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha:0.7),
               borderRadius: BorderRadius.circular(15),
             ),
             child: GridView.builder(
