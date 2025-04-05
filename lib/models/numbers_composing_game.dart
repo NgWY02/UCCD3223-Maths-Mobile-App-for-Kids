@@ -257,6 +257,30 @@ class NumberComposingGame extends ChangeNotifier {
     }
   }
   
+  // Add a disposed flag to track disposal state
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _disposed = true;
+    super.dispose();
+  }
+
+  void _autoAdvanceToNextRound() {
+    // Wait a moment, then update round and show new question
+    Future.delayed(Duration(milliseconds: 1500), () {
+      // Only proceed if not disposed
+      if (!_disposed) {
+        displayRound = currentRound;
+        generateNewRound();
+        isTransitioning = false;
+        notifyListeners();
+      }
+    });
+  }
+
+  // Update useHint to check for disposed state
   bool useHint() {
     if (_hintsRemaining > 0 && !hintActive) {
       _hintsRemaining--;
@@ -264,7 +288,8 @@ class NumberComposingGame extends ChangeNotifier {
       notifyListeners();
       
       Future.delayed(Duration(milliseconds: 2000), () {
-        if (!gameOver) {
+        // Only proceed if not disposed
+        if (!_disposed && !gameOver) {
           hintActive = false;
           notifyListeners();
         }
@@ -273,26 +298,34 @@ class NumberComposingGame extends ChangeNotifier {
     }
     return false;
   }
-  
-  bool skipQuestion() {
-    if (_skipsRemaining > 0) {
-      _skipsRemaining--;
-      
-      // Stop the timer
-      _timer?.cancel();
-      
-      if (currentRound < maxRounds) {
-        currentRound++;
-        lastAnswerCorrect = null;
+
+  // Update restartGame to check for disposed state
+  void restartGame() {
+    // First, handle any ongoing transitions or timers
+    isTransitioning = false;
+    _timer?.cancel();
+    
+    // Reset all game states
+    score = 0;
+    currentRound = 1;
+    displayRound = 1;
+    gameOver = false;
+    lastAnswerCorrect = null;
+    selectedNumbers = [];
+    selectedIndices = {};
+    hintActive = false;
+    
+    // Reconfigure difficulty settings
+    _configureDifficulty(_difficulty ?? 'easy');
+    
+    // Generate new round after a short delay to ensure clean state
+    Future.delayed(Duration(milliseconds: 100), () {
+      // Only proceed if not disposed
+      if (!_disposed) {
         generateNewRound();
-      } else {
-        gameOver = true;
+        notifyListeners();
       }
-      
-      notifyListeners();
-      return true;
-    }
-    return false;
+    });
   }
   
   void submitAnswer() {
@@ -332,41 +365,26 @@ class NumberComposingGame extends ChangeNotifier {
     
     notifyListeners();
   }
-
-  void _autoAdvanceToNextRound() {
-      // Wait a moment, then update round and show new question
-      Future.delayed(Duration(milliseconds: 1500), () {
-        displayRound = currentRound;
+  
+  bool skipQuestion() {
+    if (_skipsRemaining > 0) {
+      _skipsRemaining--;
+      
+      // Stop the timer
+      _timer?.cancel();
+      
+      if (currentRound < maxRounds) {
+        currentRound++;
+        lastAnswerCorrect = null;
         generateNewRound();
-        isTransitioning = false;
-        notifyListeners();
-      });
-  }
-  
-  
-  void restartGame() {
-    // First, handle any ongoing transitions or timers
-    isTransitioning = false;  // Reset transition state first
-    _timer?.cancel();  // Cancel any running timer
-    
-    // Reset all game states
-    score = 0;
-    currentRound = 1;
-    displayRound = 1;
-    gameOver = false;
-    lastAnswerCorrect = null;
-    selectedNumbers = [];
-    selectedIndices = {};
-    hintActive = false;
-    
-    // Reconfigure difficulty settings
-    _configureDifficulty(_difficulty ?? 'easy');
-    
-    // Generate new round after a short delay to ensure clean state
-    Future.delayed(Duration(milliseconds: 100), () {
-      generateNewRound();
+      } else {
+        gameOver = true;
+      }
+      
       notifyListeners();
-    });
+      return true;
+    }
+    return false;
   }
   
   bool isHintNumber(int number) {

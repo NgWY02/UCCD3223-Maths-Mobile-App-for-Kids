@@ -191,7 +191,6 @@ class NumberComparisonGame with ChangeNotifier {
         _skipsRemaining = 1;
         break;
     }
-    
     prepareNextRound();
   }
   

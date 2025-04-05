@@ -351,9 +351,6 @@ class ExamModeGame extends ChangeNotifier {
       } else {
         correctOrder.sort((a, b) => b.compareTo(a));
       }
-      
-      // We're not automatically checking here anymore
-      // Instead we'll wait for the user to press the submit button
     }
   }
 
