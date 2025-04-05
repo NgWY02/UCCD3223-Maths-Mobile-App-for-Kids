@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'numbers_composing_widgets.dart';
 import '../models/exam_mode_game.dart';
 
 class ComparisonGameWidget extends StatefulWidget {
@@ -415,15 +414,33 @@ class _OrderingGameWidgetState extends State<OrderingGameWidget>
     
     // Move to next question after delay
     Future.delayed(Duration(milliseconds: 1500), () {
-      if (game.currentQuestion >= 20) {
-        game.gameOver = true;
-      } else {
-        game.currentQuestion++;
-        if (game.players.length > 1) {
-          game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+      if (game.isMultiplayer) {
+        if (game.currentQuestion >= 10 && game.currentPlayerIndex == 0) {
+          // First player finished their 10 questions
+          game.currentPlayerIndex = 1;
+          game.currentQuestion = 1;
+          game.remainingSeconds = 60; // Reset timer for second player
+          game.startTimer(); // Restart timer
+        } else if (game.currentQuestion >= 10 && game.currentPlayerIndex == 1) {
+          // Second player finished their 10 questions
+          game.gameOver = true;
+        } else {
+          // Continue with next question
+          game.currentQuestion++;
         }
+      } else {
+        // Single player mode
+        if (game.currentQuestion >= 20) {
+          game.gameOver = true;
+        } else {
+          game.currentQuestion++;
+        }
+      }
+      
+      if (!game.gameOver) {
         game.generateNextQuestion();
       }
+      game.notifyListeners();
     });
   }
 

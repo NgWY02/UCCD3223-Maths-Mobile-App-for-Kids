@@ -226,9 +226,15 @@ Future<void> _playMusic(String assetPath) async {
   }
 }
 
-// Complete replacement for forceExamModeMusic method
+// Updated forceExamModeMusic method
 Future<void> forceExamModeMusic() async {
-  print("FORCING exam mode music with NO CHECKS");
+  // First check if music is enabled
+  if (!_isMusicEnabled) {
+    print("Music is disabled, not starting exam mode music");
+    _currentMusic = 'sounds/exam_mode_music.mp3'; // Still update the current music
+    return;
+  }
+  
   // Stop any existing player first
   if (_backgroundPlayer != null) {
     try {
@@ -241,7 +247,7 @@ Future<void> forceExamModeMusic() async {
   }
   
   try {
-    // Create new player and play directly - bypass all normal checks
+    // Create new player and play directly
     final player = AudioPlayer();
     await player.setReleaseMode(ReleaseMode.loop);
     await player.play(AssetSource('sounds/exam_mode_music.mp3'));
