@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="mba_version2"
+        android:label="Math Magic"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
